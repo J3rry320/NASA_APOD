@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { NASAStore } from "../typings";
 import AsteroidCard from "../components/ApodCard";
 import DatePicker from "../components/DatePicker";
+import { Grid } from "@material-ui/core";
 interface IAPODProps {
   getApod: (params: NASAStore.getAPODRequest) => void;
   Apod: NASAStore.IAPODReducers;
@@ -18,32 +19,44 @@ class AsteroidPicture extends PureComponent<IAPODProps> {
     width: "100vw",
     margin: "-8px",
   });
-  private Date = new Date();
-  getTodaysDate = () =>
-    `${this.Date.getFullYear()}-${this.Date.getMonth()}-${this.Date.getDay()}`;
+  state = {
+    date: new Date(),
+  };
+
   componentDidMount() {
     this.props.getApod({
-      date: this.getTodaysDate(),
+      date: this.processDate(this.state.date),
       hd: true,
     });
   }
-  onChange = (date: Date) => {
+  processDate = (inputDate: Date) => inputDate.toISOString().split("T")[0];
+  onChange = (inputDate: Date) => {
+    const { date } = this.state;
+    this.setState({
+      date: inputDate,
+    });
     this.props.getApod({
-      date: date.toISOString().split("T")[0],
+      date: this.processDate(date),
       hd: true,
     });
   };
 
   render() {
     const { loading, pictureData } = this.props.Apod;
+    const { date } = this.state;
     return loading ? (
       <div>Loading</div>
     ) : (
       pictureData && (
         <div style={this.pictureCSS(pictureData?.hdurl)}>
-          <AsteroidCard pictureData={pictureData} />
-          <br />
-          <DatePicker onChange={this.onChange} value={this.Date} />
+          <Grid container spacing={3}>
+            <Grid item>
+              <AsteroidCard pictureData={pictureData} />
+            </Grid>
+            <Grid item>
+              <DatePicker onChange={this.onChange} value={date} />
+            </Grid>
+          </Grid>
         </div>
       )
     );

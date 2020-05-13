@@ -13,6 +13,10 @@ function DatePicker(props: IDateProps) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker
+        style={{
+          color: "#fff",
+          backgroundColor: "#fff",
+        }}
         disableFuture
         margin="normal"
         id="date-picker-dialog"
