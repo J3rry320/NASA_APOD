@@ -4,8 +4,12 @@ import Typography from "@material-ui/core/typography";
 import { getApod } from "../store/actions/Apod";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
+import { NASAStore } from "../typings";
+import AsteroidCard from "../components/ApodCard";
+import DatePicker from "../components/DatePicker";
 interface IAPODProps {
   getApod: (params: NASAStore.getAPODRequest) => void;
+  Apod: NASAStore.IAPODReducers;
 }
 class AsteroidPicture extends PureComponent<IAPODProps> {
   private pictureCSS = (image: string) => ({
@@ -23,17 +27,25 @@ class AsteroidPicture extends PureComponent<IAPODProps> {
       hd: true,
     });
   }
+  onChange = (date: Date) => {
+    this.props.getApod({
+      date: date.toISOString().split("T")[0],
+      hd: true,
+    });
+  };
+
   render() {
-    return (
-      <div
-        style={this.pictureCSS(
-          "https://apod.nasa.gov/apod/image/1909/HarvestmoonGraffand.jpg"
-        )}
-      >
-        <Typography align="left" variant="h1" className="text">
-          This is sample
-        </Typography>
-      </div>
+    const { loading, pictureData } = this.props.Apod;
+    return loading ? (
+      <div>Loading</div>
+    ) : (
+      pictureData && (
+        <div style={this.pictureCSS(pictureData?.hdurl)}>
+          <AsteroidCard pictureData={pictureData} />
+          <br />
+          <DatePicker onChange={this.onChange} value={this.Date} />
+        </div>
+      )
     );
   }
 }

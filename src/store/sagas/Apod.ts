@@ -11,6 +11,7 @@ function* getAPOD(params: any) {
       getRequest,
       API_APOD(process.env.API_KEY, date, hd)
     );
+
     yield put({ type: ApodConstants.GETTING_APOD_SUCCESS, payload });
   } catch (error) {
     yield put({ type: ApodConstants.GETTING_APOD_FAILURE, error });

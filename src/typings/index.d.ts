@@ -1,4 +1,4 @@
-declare module NASAStore {
+export declare module NASAStore {
   export type APODPayload = {
     copyright: string;
     date: string;
